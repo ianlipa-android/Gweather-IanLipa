@@ -1,47 +1,48 @@
 package com.example.gweather.models
-import androidx.room.Entity
+import com.google.gson.annotations.SerializedName
 
-@Entity
+//@Entity
 data class OpenWeatherResponse(
-    val lat: Double,
-    val lon: Double,
-    val timezone: String,
-    val timezoneOffset: Int,
-    val current: Current,
-    val minutely: List<Any>,
-    val hourly: List<Any>,
-    val daily: List<Any>,
-    val alerts: List<Any>,
+    @SerializedName("lat") val lat: Double? = null,
+    @SerializedName("lon") val lon: Double? = null,
+    @SerializedName("timezone") val timezone: String? = null,
+    @SerializedName("timezone_offset") val timezoneOffset: Int? = null,
+    @SerializedName("current") val current: Current? = null,
+    @SerializedName("minutely") val minutely: List<Any>? = null,
+    @SerializedName("hourly") val hourly: List<Any>? = null,
+    @SerializedName("daily") val daily: List<Any>? = null,
+    @SerializedName("alerts") val alerts: List<Any>? = null,
 )
 
-@Entity
+//@Entity
 data class Current(
-    val clouds: Int,
-    val dew_point: Double,
-    val dt: Int,
-    val feels_like: Double,
-    val humidity: Int,
-    val pressure: Int,
-    val rain: Rain,
-    val sunrise: Int,
-    val sunset: Int,
-    val temp: Double,
-    val uvi: Double,
-    val visibility: Int,
-    val weather: List<Weather>,
-    val wind_deg: Int,
-    val wind_speed: Int)
-
-
-@Entity
-data class Rain(
-    val hour: Double
+    @SerializedName("dt") val dt: Int? = null,
+    @SerializedName("sunrise") val sunrise: Int? = null,
+    @SerializedName("sunset") val sunset: Int? = null,
+    @SerializedName("temp") val temp: Double? = null,
+    @SerializedName("feels_like") val feelsLike: Double? = null,
+    @SerializedName("pressure") val pressure: Int? = null,
+    @SerializedName("humidity") val humidity: Int? = null,
+    @SerializedName("dew_point") val dewPoint: Double? = null,
+    @SerializedName("uvi") val uvi: Double? = null,
+    @SerializedName("clouds") val clouds: Int? = null,
+    @SerializedName("visibility") val visibility: Int? = null,
+    @SerializedName("wind_speed") val windSpeed: Int? = null,
+    @SerializedName("wind_deg") val windDeg: Int? = null,
+    @SerializedName("wind_gust") val windGust: Int? = null,
+    @SerializedName("rain") val rain: Double? = null,
+    @SerializedName("precipitation") val precipitation: Double? = null,
+    @SerializedName("weather") val weather: List<Weather>? = null,
 )
 
-@Entity
+
+
+
+//@Entity
 data class Weather(
-    val description: String,
-    val icon: String,
-    val id: Int,
-    val main: String
+
+    @SerializedName("id") val id: Int? = null,
+    @SerializedName("main") val main: String? = null,
+    @SerializedName("description") val description: String? = null,
+    @SerializedName("icon") val icon: String? = null,
 )

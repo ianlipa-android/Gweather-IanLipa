@@ -6,7 +6,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import jakarta.inject.Named
-import jakarta.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -16,14 +15,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    @Singleton
+    //@Singleton
     @Provides
     fun provideOkHttp() : OkHttpClient {
         return OkHttpClient.Builder()
             .build()
     }
 
-    @Singleton
+    //@Singleton
     @Provides
     @Named("loggingInterceptor")
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
@@ -35,7 +34,7 @@ object NetworkModule {
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://")
+            .baseUrl("https://api.openweathermap.org")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()

@@ -1,20 +1,19 @@
 package com.example.gweather.data.restapi
 
 import com.example.gweather.models.OpenWeatherResponse
-import com.example.gweather.models.UserInfo
+import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
 
-    @GET("api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={part}&appid={key}")
+    @GET("/data/2.5/data") //?lat={lat}&lon={lon}&exclude={part}&appid={key}
     suspend fun getOpenWeather(
-        @Path("lat") lat: String,
-        @Path("lon") long: String,
-        @Path("part") excludedPart: String? = "",
-        @Path("key") apiKey: String
-    ) : OpenWeatherResponse
+        @Query("lat") lat: String,
+        @Query("lon") long: String,
+        @Query("exclude") excludedPart: String = "minutely,hourly",
+        @Query("appid") apiKey: String
+    ) : Response<OpenWeatherResponse>
 
 
 }

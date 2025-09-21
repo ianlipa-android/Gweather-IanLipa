@@ -1,19 +1,21 @@
 [versions]
 agp = "8.13.0"
 kotlin = "2.2.20"
-coreKtx = "1.10.1"
+coreKtx = "1.17.0"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.6.1"
-activityCompose = "1.8.0"
-composeBom = "2024.09.00"
-hilt = "2.56.2"
-ksp = "2.2.0-2.0.2"
-retrofit = "2.9.0"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+lifecycleRuntimeKtx = "2.9.4"
+activityCompose = "1.11.0"
+composeBom = "2025.09.00"
+hilt = "2.57.1"
+ksp = "2.2.20-2.0.2"
+retrofit = "3.0.0"
 room = "2.8.0" # Use the latest stable version
 sqlite = "2.6.0" # Use the latest stable version
-loggingInterceptor = "4.11.0"
+loggingInterceptor = "5.1.0"
+volley = "1.2.1"
+playServicesLocation = "21.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,6 +37,7 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", v
 hilt-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+retrofit-rxjava3-adapter = { group = "com.squareup.retrofit2", name = "adapter-rxjava3", version.ref = "retrofit" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 # Room compiler for annotation processing (required for Room)
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
@@ -43,6 +46,8 @@ androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.r
 # Optional SQLite Wrapper available in version 2.8.0 and higher
 androidx-room-sqlite-wrapper = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
+volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
+google-play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 
 [plugins]
