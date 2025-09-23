@@ -1,7 +1,8 @@
 package com.example.gweather.models
+import androidx.room.Entity
 import com.google.gson.annotations.SerializedName
 
-//@Entity
+@Entity
 data class OpenWeatherResponse(
     @SerializedName("lat") val lat: Double? = null,
     @SerializedName("lon") val lon: Double? = null,
@@ -14,7 +15,7 @@ data class OpenWeatherResponse(
     @SerializedName("alerts") val alerts: List<Any>? = null,
 )
 
-//@Entity
+@Entity
 data class Current(
     @SerializedName("dt") val dt: Int? = null,
     @SerializedName("sunrise") val sunrise: Int? = null,
@@ -38,7 +39,7 @@ data class Current(
 
 
 
-//@Entity
+@Entity
 data class Weather(
 
     @SerializedName("id") val id: Int? = null,

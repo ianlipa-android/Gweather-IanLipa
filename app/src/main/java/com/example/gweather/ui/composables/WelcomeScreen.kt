@@ -12,13 +12,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,22 +36,24 @@ fun WelcomeScreen(onSignIn: () -> Unit = {},
             .background(color = Color.White),
         contentAlignment = Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 64.dp),
+            horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
+                modifier = Modifier.padding(44.dp),
                 painter = painterResource(R.drawable.app_logo),
                 contentDescription = null
             )
 
-            Text(modifier = Modifier.padding(horizontal = 24.dp),
+            Text(modifier = Modifier.fillMaxWidth(),
                 text = "Weather made Simple.", textAlign = TextAlign.Center,
-                fontSize = 42.sp)
+                fontSize = 46.sp, fontFamily = FontFamily(Font(R.font.poppins_bold)))
 
-            Spacer(Modifier.height(54.dp))
+            Spacer(Modifier.weight(1f))
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(.7f)
+                    .fillMaxWidth()
                     .height(48.dp)
-                    .background(color = Color.Black, shape = CircleShape)
+                    .background(color = Color.Black, shape = RoundedCornerShape(12.dp))
                     .clickable(onClick = { onSignIn() }),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -59,10 +63,10 @@ fun WelcomeScreen(onSignIn: () -> Unit = {},
             Spacer(modifier = Modifier.height(12.dp))
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(.7f)
+                    .fillMaxWidth()
                     .height(48.dp)
-                    .background(color = Color.White, shape = CircleShape)
-                    .border(1.dp, color = Color.Black, shape = CircleShape),
+                    .background(color = Color.White, shape = RoundedCornerShape(12.dp))
+                    .border(1.dp, color = Color.Black, shape = RoundedCornerShape(12.dp)),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
