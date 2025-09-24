@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    @GET("/data/2.5/data") //?lat={lat}&lon={lon}&exclude={part}&appid={key}
+    @GET("/data/2.5/data")
     suspend fun getOpenWeather(
         @Query("lat") lat: String,
         @Query("lon") long: String,

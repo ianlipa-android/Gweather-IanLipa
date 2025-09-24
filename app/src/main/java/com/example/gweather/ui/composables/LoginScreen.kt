@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.example.gweather.R
 
 @Composable
-fun LoginScreen(onClickLogin: () -> Unit = {}, onClickRegister: () -> Unit = {},) {
+fun LoginScreen(onClickLogin: () -> Unit = {}, onNavigateToRegister: () -> Unit = {},) {
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -73,7 +73,7 @@ fun LoginScreen(onClickLogin: () -> Unit = {}, onClickRegister: () -> Unit = {},
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Log in", textAlign = TextAlign.Center,
+                text = "Log in", color = Color.Black, textAlign = TextAlign.Center,
                 fontSize = 38.sp, fontFamily = FontFamily(Font(R.font.poppins_bold))
             )
 
@@ -82,7 +82,7 @@ fun LoginScreen(onClickLogin: () -> Unit = {}, onClickRegister: () -> Unit = {},
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text("Username", fontSize = 12.sp) },
+                label = { Text("Username", color = Color.Black,fontSize = 12.sp) },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -91,7 +91,7 @@ fun LoginScreen(onClickLogin: () -> Unit = {}, onClickRegister: () -> Unit = {},
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password", fontSize = 12.sp) },
+                label = { Text("Password", color = Color.Black,fontSize = 12.sp) },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -120,8 +120,9 @@ fun LoginScreen(onClickLogin: () -> Unit = {}, onClickRegister: () -> Unit = {},
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = {}, indication = null, interactionSource = null),
+                    .clickable(onClick = { onNavigateToRegister() }, indication = null, interactionSource = null),
                 textAlign = TextAlign.Center,
+                color = Color.Black,
                 text = annotatedString
             )
 
