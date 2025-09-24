@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.sp
 import com.example.gweather.R
 
 @Composable
-fun WelcomeScreen(onSignIn: () -> Unit = {},
-                  onCreateAccount: () -> Unit = {}) {
+fun IntroScreen(onNavigateToSignIn: () -> Unit = {},
+                  onNavigateToCreateAccount: () -> Unit = {}) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -45,7 +45,7 @@ fun WelcomeScreen(onSignIn: () -> Unit = {},
             )
 
             Text(modifier = Modifier.fillMaxWidth(),
-                text = "Weather made Simple.", textAlign = TextAlign.Center,
+                text = "Weather made Simple.", color = Color.Black, textAlign = TextAlign.Center,
                 fontSize = 46.sp, fontFamily = FontFamily(Font(R.font.poppins_bold)))
 
             Spacer(Modifier.weight(1f))
@@ -54,11 +54,11 @@ fun WelcomeScreen(onSignIn: () -> Unit = {},
                     .fillMaxWidth()
                     .height(48.dp)
                     .background(color = Color.Black, shape = RoundedCornerShape(12.dp))
-                    .clickable(onClick = { onSignIn() }),
+                    .clickable(onClick = { onNavigateToSignIn() }),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Sign In", color = Color.White)
+                Text(text = "Proceed to LogIn", color = Color.White)
             }
             Spacer(modifier = Modifier.height(12.dp))
             Column(
@@ -66,12 +66,14 @@ fun WelcomeScreen(onSignIn: () -> Unit = {},
                     .fillMaxWidth()
                     .height(48.dp)
                     .background(color = Color.White, shape = RoundedCornerShape(12.dp))
-                    .border(1.dp, color = Color.Black, shape = RoundedCornerShape(12.dp)),
+                    .border(1.dp, color = Color.Black, shape = RoundedCornerShape(12.dp))
+                    .clickable(onClick = { onNavigateToCreateAccount() }),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Create account"
+                    text = "Create account",
+                    color = Color.Black,
                 )
             }
 
@@ -81,6 +83,6 @@ fun WelcomeScreen(onSignIn: () -> Unit = {},
 
 @Preview
 @Composable
-fun WelcomeScreenPreview() {
-    WelcomeScreen()
+fun IntroScreenPreview() {
+    IntroScreen()
 }

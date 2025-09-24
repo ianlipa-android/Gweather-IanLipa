@@ -1,21 +1,21 @@
 package com.example.gweather.models
-import androidx.room.Entity
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
-@Entity
+@Serializable
 data class OpenWeatherResponse(
     @SerializedName("lat") val lat: Double? = null,
     @SerializedName("lon") val lon: Double? = null,
     @SerializedName("timezone") val timezone: String? = null,
     @SerializedName("timezone_offset") val timezoneOffset: Int? = null,
     @SerializedName("current") val current: Current? = null,
-    @SerializedName("minutely") val minutely: List<Any>? = null,
-    @SerializedName("hourly") val hourly: List<Any>? = null,
-    @SerializedName("daily") val daily: List<Any>? = null,
-    @SerializedName("alerts") val alerts: List<Any>? = null,
+    @SerializedName("minutely") val minutely: List<Current>? = null,
+    @SerializedName("hourly") val hourly: List<Current>? = null,
+    @SerializedName("daily") val daily: List<Current>? = null,
+    @SerializedName("alerts") val alerts: List<Current>? = null,
 )
 
-@Entity
+@Serializable
 data class Current(
     @SerializedName("dt") val dt: Int? = null,
     @SerializedName("sunrise") val sunrise: Int? = null,
@@ -36,12 +36,8 @@ data class Current(
     @SerializedName("weather") val weather: List<Weather>? = null,
 )
 
-
-
-
-@Entity
+@Serializable
 data class Weather(
-
     @SerializedName("id") val id: Int? = null,
     @SerializedName("main") val main: String? = null,
     @SerializedName("description") val description: String? = null,

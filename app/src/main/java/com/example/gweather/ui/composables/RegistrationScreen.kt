@@ -37,8 +37,8 @@ import com.example.gweather.R
 
 @Composable
 fun RegistrationScreen(
-    onClickRegister: () -> Unit = {},
-    onClickLogin: () -> Unit = {}
+    onClickRegister: (String, String, String) -> Unit = {_,_,_ ->},
+    onNavigateToLogin: () -> Unit = {}
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -75,7 +75,7 @@ fun RegistrationScreen(
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Register now", textAlign = TextAlign.Center,
+                text = "Register now", color = Color.Black, textAlign = TextAlign.Center,
                 fontSize = 38.sp, fontFamily = FontFamily(Font(R.font.poppins_bold))
             )
 
@@ -84,7 +84,7 @@ fun RegistrationScreen(
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text("Username", fontSize = 12.sp) },
+                label = { Text("Username",color = Color.Black, fontSize = 12.sp) },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -93,7 +93,7 @@ fun RegistrationScreen(
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password", fontSize = 12.sp) },
+                label = { Text("Password",color = Color.Black, fontSize = 12.sp) },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -102,7 +102,7 @@ fun RegistrationScreen(
             OutlinedTextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
-                label = { Text("Confirm Password", fontSize = 12.sp) },
+                label = { Text("Confirm Password",color = Color.Black, fontSize = 12.sp) },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -117,7 +117,8 @@ fun RegistrationScreen(
                     .height(64.dp)
                     .padding(vertical = 6.dp)
                     .background(color = Color.Black, shape = RoundedCornerShape(12.dp))
-                    .border(1.dp, color = Color.White, shape = RoundedCornerShape(12.dp)),
+                    .border(1.dp, color = Color.White, shape = RoundedCornerShape(12.dp))
+                    .clickable(onClick = { onClickRegister(username, password, confirmPassword) }),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -132,8 +133,9 @@ fun RegistrationScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = {}, indication = null, interactionSource = null),
+                    .clickable(onClick = { onNavigateToLogin() }, indication = null, interactionSource = null),
                 textAlign = TextAlign.Center,
+                color = Color.Black,
                 text = annotatedString
             )
         }

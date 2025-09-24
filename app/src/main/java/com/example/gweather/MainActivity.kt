@@ -21,10 +21,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.gweather.ui.composables.WelcomeScreen
+import androidx.navigation.compose.rememberNavController
+import com.example.gweather.ui.ComposeNavigation
+import com.example.gweather.ui.composables.IntroRoute
 import com.example.gweather.ui.theme.GweatherTheme
 import com.example.gweather.utils.LocationUtils
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -53,12 +54,12 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private val locationRequest: LocationRequest = LocationRequest.create().apply {
+    /*private val locationRequest: LocationRequest = LocationRequest.create().apply {
         interval = 30
         fastestInterval = 10
         priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         maxWaitTime = 60
-    }
+    }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,14 +71,16 @@ class MainActivity : ComponentActivity() {
                 val context = LocalContext.current
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     innerPadding
-                    WelcomeScreen(onSignIn = {
-                        //requestPermissions(this, this)
-                        showAlertDialog()
-                    })
+                        ComposeNavigation(
+                            isLocationEnabled = isLocationEnabled,
+                            onRequestPermission = {
+                                requestLocationRationale()
+                            },
+                            onGetLocation = {
+                                locationUtils.getCurrentLocationCoordinate(context)
+                            }
+                        )
                     Log.d("asd", "isLocationEnabled $isLocationEnabled")
-                    //requestPermissions(this, this)
-                    requestLocationRationale()
-                    locationUtils.getCurrentLocationCoordinate(context)
                 }
             }
         }
@@ -85,17 +88,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-            || ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED) {
-            // Permission is granted, proceed with the action that requires this permission
-            // For example, if it's camera permission, you can now open the camera
-        } else {
-            showAlertDialog()
-        }
+        checkPermissionOnResume()
     }
 
     private fun requestLocationRationale() {
@@ -197,12 +190,27 @@ class MainActivity : ComponentActivity() {
             show()
         }
     }
+
+    private fun checkPermissionOnResume() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            || ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED) {
+            // Permission is granted, proceed with the action that requires this permission
+            // For example, if it's camera permission, you can now open the camera
+        } else {
+            showAlertDialog()
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     GweatherTheme {
-        WelcomeScreen()
+        val navController = rememberNavController()
+        IntroRoute(navController)
     }
 }
