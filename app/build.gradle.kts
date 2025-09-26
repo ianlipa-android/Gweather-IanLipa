@@ -45,6 +45,9 @@ android {
     buildFeatures {
         compose = true
     }
+    kotlinOptions {
+        freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
+    }
 }
 
 dependencies {
@@ -74,4 +77,6 @@ dependencies {
     implementation(libs.google.play.services.location)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.androidx.security.crypto)
+    implementation(libs.jbcrypt)
 }

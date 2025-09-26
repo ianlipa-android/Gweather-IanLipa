@@ -64,6 +64,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val isLocationEnabled = locationUtils.isLocationEnabled(this)
+
         initFusedLocationProviderClient()
         enableEdgeToEdge()
         setContent {

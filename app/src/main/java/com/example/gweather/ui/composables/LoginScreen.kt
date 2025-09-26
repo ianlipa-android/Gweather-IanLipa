@@ -2,7 +2,6 @@ package com.example.gweather.ui.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,12 +34,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.gweather.R
+import com.example.gweather.ui.composables.widgets.OutlinedPasswordTextField
+import com.example.gweather.ui.composables.widgets.PrimaryButton
 
 @Composable
-fun LoginScreen(onClickLogin: () -> Unit = {}, onNavigateToRegister: () -> Unit = {},) {
+fun LoginScreen(
+    isValidating: Boolean = false,
+    onClickLogin: (String, String) -> Unit = {_, _ -> },
+    onNavigateToRegister: () -> Unit = {},) {
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var showPassword by remember { mutableStateOf(false) }
+    //var isValidating by remember { mutableStateOf(false) }
+
     val annotatedString = buildAnnotatedString {
         append("Don't have an account? ")
         withStyle(
@@ -64,7 +72,9 @@ fun LoginScreen(onClickLogin: () -> Unit = {}, onNavigateToRegister: () -> Unit 
         ) {
 
             Image(
-                modifier = Modifier.fillMaxWidth().padding(44.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(44.dp),
                 painter = painterResource(R.drawable.app_logo),
                 contentDescription = "App Logo"
             )
@@ -74,7 +84,7 @@ fun LoginScreen(onClickLogin: () -> Unit = {}, onNavigateToRegister: () -> Unit 
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Log in", color = Color.Black, textAlign = TextAlign.Center,
-                fontSize = 38.sp, fontFamily = FontFamily(Font(R.font.poppins_bold))
+                fontSize = 46.sp, lineHeight = 54.sp, fontFamily = FontFamily(Font(R.font.poppins_bold))
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -84,43 +94,46 @@ fun LoginScreen(onClickLogin: () -> Unit = {}, onNavigateToRegister: () -> Unit 
                 onValueChange = { username = it },
                 label = { Text("Username", color = Color.Black,fontSize = 12.sp) },
                 shape = RoundedCornerShape(12.dp),
+                colors =TextFieldDefaults.colors().copy(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = Color.Cyan,
+                    unfocusedIndicatorColor = Color.Black
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(64.dp)
             )
-            OutlinedTextField(
+            OutlinedPasswordTextField(
                 value = password,
-                onValueChange = { password = it },
-                label = { Text("Password", color = Color.Black,fontSize = 12.sp) },
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
+                onValueChange = {
+                    password = it
+                },
+                show = showPassword,
+                onClickEyecon = { showPassword = !showPassword}
             )
-            Spacer(modifier = Modifier.height(8.dp))
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .padding(vertical = 6.dp)
-                    .background(color = Color.Black, shape = RoundedCornerShape(12.dp))
-                    .border(1.dp, color = Color.White, shape = RoundedCornerShape(12.dp)),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Sign in",
-                    color = Color.White
-                )
-            }
+            PrimaryButton(
+                modifier = Modifier.padding(vertical = 8.dp),
+                isValidating = isValidating,
+                label = "Sign in",
+                onSubmit = {
+                    onClickLogin(username, password)
+                }
+            )
 
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = { onNavigateToRegister() }, indication = null, interactionSource = null),
+                    .clickable(
+                        onClick = { onNavigateToRegister() },
+                        indication = null,
+                        interactionSource = null
+                    ),
                 textAlign = TextAlign.Center,
                 color = Color.Black,
                 text = annotatedString
