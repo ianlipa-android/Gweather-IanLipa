@@ -16,6 +16,8 @@ loggingInterceptor = "5.1.0"
 playServicesLocation = "21.3.0"
 androidx-compose-navigation = "2.9.5"
 serialization = "2.2.20"
+securityCrypto = "1.1.0"
+jbCrypt = "0.4"
 
 
 [libraries]
@@ -42,6 +44,9 @@ logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-intercep
 google-play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-compose-navigation" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
+jbcrypt = { group = "org.mindrot", name = "jbcrypt", version.ref = "jbCrypt" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

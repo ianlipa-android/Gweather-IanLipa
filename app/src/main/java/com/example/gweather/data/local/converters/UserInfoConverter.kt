@@ -1,8 +1,8 @@
 package com.example.gweather.data.local.converters
 
 import androidx.room.TypeConverter
-import com.example.gweather.models.OpenWeatherResponse
 import com.example.gweather.models.UserInfo
+import com.example.gweather.models.currentweather.OpenWeatherCurrentResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -20,13 +20,13 @@ class UserInfoConverter {
 
 
         @TypeConverter
-        fun fromWeatherList(value: List<OpenWeatherResponse>?): String {
+        fun fromWeatherList(value: List<OpenWeatherCurrentResponse>?): String {
             return Gson().toJson(value)
         }
 
         @TypeConverter
-        fun toWeatherList(value: String?): List<OpenWeatherResponse> {
-            val type = object : TypeToken<List<OpenWeatherResponse>>() {}.type
+        fun toWeatherList(value: String?): List<OpenWeatherCurrentResponse> {
+            val type = object : TypeToken<List<OpenWeatherCurrentResponse>>() {}.type
             return Gson().fromJson(value, type)
         }
 

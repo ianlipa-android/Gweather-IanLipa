@@ -1,10 +1,15 @@
 package com.example.gweather.ui
 
+import android.app.Activity
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideIn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -15,6 +20,8 @@ import com.example.gweather.ui.composables.IntroRoute
 import com.example.gweather.ui.composables.LoginRoute
 import com.example.gweather.ui.composables.RegistrationRoute
 import com.example.gweather.viewmodels.LoginViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ComposeNavigation(
@@ -23,11 +30,20 @@ fun ComposeNavigation(
     onGetLocation: () -> Unit = {},
 
     ) {
-
-    val loginViewModel = hiltViewModel<LoginViewModel>()
-
+    var backClicks = 0
+    val context = LocalContext.current
+    val coroutine = rememberCoroutineScope()
     val mNavController = rememberNavController()
-    NavHost(navController = mNavController, startDestination = AppRoute.Intro) {
+    val loginViewModel = hiltViewModel<LoginViewModel>()
+    val isLoggedIn = loginViewModel.isLoggedIn
+    val startDestination = if (isLoggedIn) {
+        AppRoute.Home
+    } else {
+        AppRoute.Intro
+    }
+
+
+    NavHost(navController = mNavController, startDestination = startDestination) {
 
         composable<AppRoute.Intro>(
             enterTransition = {
@@ -54,7 +70,10 @@ fun ComposeNavigation(
             popEnterTransition = { fadeIn(animationSpec = tween(durationMillis = 300)) },
             popExitTransition = { fadeOut(animationSpec = tween(durationMillis = 300)) }
         ) {
-            LoginRoute(navController = mNavController)
+            LoginRoute(
+                navController = mNavController,
+                loginViewModel
+            )
         }
 
         composable<AppRoute.Registration>(
@@ -85,13 +104,26 @@ fun ComposeNavigation(
             popEnterTransition = { fadeIn(animationSpec = tween(durationMillis = 300)) },
             popExitTransition = { fadeOut(animationSpec = tween(durationMillis = 300)) }
         ) {
-            HomeRoute(navController = mNavController)
+            HomeRoute(navController = mNavController, loginViewModel)
         }
 
-        /*composable<AppRoute.DetailScreen> { backStackEntry ->
-            val args = backStackEntry.toRoute<AppRoute.DetailScreen>()
-            DetailScreen(person = args.person)
-        }*/
-
+    }
+    BackHandler {
+        if (!mNavController.popBackStack()) {
+            if (backClicks < 1) {
+                backClicks++
+                Toast.makeText(
+                    context,
+                    "Press again to exit",
+                    Toast.LENGTH_SHORT
+                ).show()
+                coroutine.launch {
+                    delay(3000)
+                    backClicks = 0
+                }
+            } else {
+                (context as? Activity)?.finish()
+            }
+        }
     }
 }

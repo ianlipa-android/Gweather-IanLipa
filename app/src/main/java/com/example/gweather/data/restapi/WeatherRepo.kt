@@ -1,6 +1,6 @@
 package com.example.gweather.data.restapi
 
-import com.example.gweather.models.OpenWeatherResponse
+import com.example.gweather.models.currentweather.OpenWeatherCurrentResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import retrofit2.Response
@@ -13,7 +13,7 @@ interface IWeatherRepo {
         lat: Double,
         long: Double,
         apiKey: String
-    ): Flow<Response<OpenWeatherResponse>>
+    ): Flow<Response<OpenWeatherCurrentResponse>>
 
 }
 
@@ -23,7 +23,7 @@ class WeatherRepo @Inject constructor(private val weatherDataSource: ApiService)
         lat: Double,
         long: Double,
         apiKey: String
-    ): Flow<Response<OpenWeatherResponse>> {
+    ): Flow<Response<OpenWeatherCurrentResponse>> {
         return flowOf(
             weatherDataSource.getOpenWeather(
                 lat = lat.toString(),
