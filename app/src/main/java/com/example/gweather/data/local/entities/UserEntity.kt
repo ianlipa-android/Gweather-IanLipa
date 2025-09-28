@@ -11,5 +11,5 @@ data class UserEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val userName: String,
     val encryptedPassword: String,
-    val weatherList: List<OpenWeatherCurrentResponse>
+    var weatherList: List<OpenWeatherCurrentResponse>
 )

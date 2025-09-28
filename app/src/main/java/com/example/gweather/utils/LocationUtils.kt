@@ -3,6 +3,7 @@ package com.example.gweather.utils
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Build
@@ -11,15 +12,26 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.example.gweather.models.currentweather.Coordinates
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import java.io.IOException
+import java.util.Locale
+import javax.inject.Singleton
 
+@Singleton
 class LocationUtils {
 
     lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private var _coordinates : MutableStateFlow<Coordinates> = MutableStateFlow(Coordinates(lat = 0.0 , long = 0.0))
+    var coordinates: StateFlow<Coordinates> = _coordinates.asStateFlow()
 
     fun isLocationEnabled(context: Context?): Boolean {
         return when {
@@ -42,7 +54,7 @@ class LocationUtils {
         }
     }
 
-    fun getCurrentLocationCoordinate(context: Context) {
+    fun getCurrentLocationCoordinate(context: Context): Coordinates {
 
         if (ContextCompat.checkSelfPermission(
                 context,
@@ -56,10 +68,9 @@ class LocationUtils {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
                     if (location != null) {
-                        val latitude = location.latitude
-                        val longitude = location.longitude
-                        // Use latitude and longitude
-                        Log.d("asd", "latitude $latitude longitude $longitude")
+                        _coordinates.value = Coordinates(lat = location.latitude,
+                        long = location.longitude)
+                        Log.d("iandebugasd", "lat ${coordinates.value.lat} long ${coordinates.value.long}")
                     } else {
                         val locationRequest = LocationRequest.Builder(
                             Priority.PRIORITY_HIGH_ACCURACY,
@@ -75,7 +86,30 @@ class LocationUtils {
                     }
                 }
         }
+        return coordinates.value
+    }
 
+    fun getLocationName(lat: Double, long: Double, context: Context): String {
+        try {
+            val geocoder: Geocoder  = Geocoder(context, Locale.getDefault())
+            val addresses = geocoder.getFromLocation(lat, long, 1)?.toList()
+
+            val city = addresses?.first()?.locality ?: ""
+            val country = addresses?.first()?.countryCode ?: ""
+            Log.d("iandebugasd ", "Location = $country, $city")
+            return if (!country.isEmpty() && !city.isEmpty()) {
+                "$country, $city"
+            } else if (!city.isEmpty()) {
+                city
+            } else if (!country.isEmpty()) {
+                country
+            } else {
+                ""
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return ""
+        }
     }
 
     fun getLocationCallback(context: Context): LocationCallback {

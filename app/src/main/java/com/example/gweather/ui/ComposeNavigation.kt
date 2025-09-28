@@ -3,14 +3,10 @@ package com.example.gweather.ui
 import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideIn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.IntOffset
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,15 +15,17 @@ import com.example.gweather.ui.composables.HomeRoute
 import com.example.gweather.ui.composables.IntroRoute
 import com.example.gweather.ui.composables.LoginRoute
 import com.example.gweather.ui.composables.RegistrationRoute
+import com.example.gweather.utils.LocationUtils
 import com.example.gweather.viewmodels.LoginViewModel
+import com.example.gweather.viewmodels.WeatherViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun ComposeNavigation(
+    locationUtils: LocationUtils,
     isLocationEnabled: Boolean = false,
-    onRequestPermission: () -> Unit = {},
-    onGetLocation: () -> Unit = {},
+    requestPermission: () -> Unit = {}
 
     ) {
     var backClicks = 0
@@ -35,6 +33,7 @@ fun ComposeNavigation(
     val coroutine = rememberCoroutineScope()
     val mNavController = rememberNavController()
     val loginViewModel = hiltViewModel<LoginViewModel>()
+    val weatherViewModel = hiltViewModel<WeatherViewModel>()
     val isLoggedIn = loginViewModel.isLoggedIn
     val startDestination = if (isLoggedIn) {
         AppRoute.Home
@@ -45,69 +44,39 @@ fun ComposeNavigation(
 
     NavHost(navController = mNavController, startDestination = startDestination) {
 
-        composable<AppRoute.Intro>(
-            enterTransition = {
-                slideIn(
-                    animationSpec = tween(durationMillis = 300),
-                    initialOffset = { IntOffset(7000, 0) }
-                )
-            },
-            exitTransition = { fadeOut(animationSpec = tween(durationMillis = 300)) },
-            popEnterTransition = { fadeIn(animationSpec = tween(durationMillis = 300)) },
-            popExitTransition = { fadeOut(animationSpec = tween(durationMillis = 300)) }
-        ) {
+        composable<AppRoute.Intro> {
             IntroRoute(navController = mNavController)
         }
 
-        composable<AppRoute.Login>(
-            enterTransition = {
-                slideIn(
-                    animationSpec = tween(durationMillis = 300),
-                    initialOffset = { IntOffset(-7000, 0) }
-                )
-            },
-            exitTransition = { fadeOut(animationSpec = tween(durationMillis = 300)) },
-            popEnterTransition = { fadeIn(animationSpec = tween(durationMillis = 300)) },
-            popExitTransition = { fadeOut(animationSpec = tween(durationMillis = 300)) }
-        ) {
+        composable<AppRoute.Login> {
             LoginRoute(
                 navController = mNavController,
-                loginViewModel
+                loginViewModel = loginViewModel
             )
         }
 
-        composable<AppRoute.Registration>(
-            enterTransition = {
-                slideIn(
-                    animationSpec = tween(durationMillis = 300),
-                    initialOffset = { IntOffset(7000, 0) }
-                )
-            },
-            exitTransition = { fadeOut(animationSpec = tween(durationMillis = 300)) },
-            popEnterTransition = { fadeIn(animationSpec = tween(durationMillis = 300)) },
-            popExitTransition = { fadeOut(animationSpec = tween(durationMillis = 300)) }
-        ) {
+        composable<AppRoute.Registration> {
             RegistrationRoute(
                 navController = mNavController,
                 loginViewModel = loginViewModel
             )
         }
 
-        composable<AppRoute.Home>(
-            enterTransition = {
-                slideIn(
-                    animationSpec = tween(durationMillis = 300),
-                    initialOffset = { IntOffset(7000, 0) }
-                )
-            },
-            exitTransition = { fadeOut(animationSpec = tween(durationMillis = 300)) },
-            popEnterTransition = { fadeIn(animationSpec = tween(durationMillis = 300)) },
-            popExitTransition = { fadeOut(animationSpec = tween(durationMillis = 300)) }
-        ) {
-            HomeRoute(navController = mNavController, loginViewModel)
+        composable<AppRoute.Home> {
+            HomeRoute(
+                navController = mNavController,
+                loginViewModel = loginViewModel,
+                weatherViewModel = weatherViewModel,
+                locationUtils = locationUtils
+            )
         }
 
     }
+
+    LaunchedEffect(Unit) {
+        requestPermission()
+    }
+
     BackHandler {
         if (!mNavController.popBackStack()) {
             if (backClicks < 1) {

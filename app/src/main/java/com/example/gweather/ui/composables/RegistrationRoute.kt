@@ -25,10 +25,9 @@ fun RegistrationRoute(
         },
         onNavigateToLogin = {
             navController.navigate(AppRoute.Login) {
-                popUpTo(navController.graph.id) {
+                popUpTo(AppRoute.Registration) {
                     inclusive = true
                 }
-                launchSingleTop = true
             }
         }
     )
