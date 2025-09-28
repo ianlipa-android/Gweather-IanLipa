@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.gweather.data.local.dao.UserDao
 import com.example.gweather.data.local.entities.UserEntity
 import com.example.gweather.models.UserInfo
+import com.example.gweather.models.currentweather.OpenWeatherCurrentResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -13,7 +14,12 @@ interface ILoginRepo {
     suspend fun login(userName: String, password: String): Flow<UserInfo?>
     suspend fun getUserByUsername(userId: String): Flow<UserInfo?>
 
-    suspend fun updateUserData(userInfo: UserInfo)
+    suspend fun updateUserWeatherData(
+        userName: String,
+        long: Double,
+        lat: Double,
+        userWeatherInfo: List<OpenWeatherCurrentResponse>
+    )
 
     suspend fun resetAllData()
 }
@@ -68,26 +74,38 @@ class LoginRepo @Inject constructor(
         )
     }
 
-    override suspend fun updateUserData(userInfo: UserInfo) {
-        userDao.upsert(
-            UserEntity(
-                userName = userInfo.username,
-                encryptedPassword = userInfo.password,
-                weatherList = userInfo.weatherList!!
-            )
-        )
+    override suspend fun updateUserWeatherData(
+        userName: String,
+        long: Double,
+        lat: Double,
+        userWeatherInfo: List<OpenWeatherCurrentResponse>
+    ) {
+        Log.d("iandebugasd", "updateUserWeatherData: $userName long: $long lat: $lat $userWeatherInfo ")
+        val userDataA = userDao.getUserByUsername(userName)
+        val existingListA =
+            userDataA?.weatherList                             // existing weather list data
+        val newUserData = userWeatherInfo.first()
+        val insertedNewCoordinatesToNewData = newUserData.coordinates?.copy(long = long, lat = lat)
+        val newListOfUpdatedWeatherInfo = listOf(newUserData.copy(coordinates = insertedNewCoordinatesToNewData))
+        val combinedListA = existingListA?.isEmpty()?.let {
+            if (!it) {
+                existingListA + newListOfUpdatedWeatherInfo
+            } else {
+                newListOfUpdatedWeatherInfo
+            }
+        }
+        userDataA.let {
+            Log.d("iandebugasd", "updateUserWeatherData.let userData $userDataA")
+            Log.d("iandebugasd", "updateUserWeatherData.let existing list $existingListA")
+            Log.d("iandebugasd", "updateUserWeatherData.let newUserData $newUserData")
+            Log.d("iandebugasd", "updateUserWeatherData.let updatedUserData $newListOfUpdatedWeatherInfo")
+            it?.weatherList = combinedListA ?: emptyList()
+            userDao.updateUserWeatherData(it!!)
+        }
     }
 
     override suspend fun resetAllData() {
         userDao.resetAllData()
     }
 
-    /*override suspend fun register(userInfo: UserInfo) {
-        userDao.registerUser(UserEntity(userName = userInfo.username,
-            encryptedPassword = userInfo.password, weatherList = userInfo.weatherList))
-    }
-
-    override suspend fun login(userName: String, password: String) {
-        userDao.login(userName, password)
-    }*/
 }

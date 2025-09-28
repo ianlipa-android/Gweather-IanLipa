@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.gweather.data.local.dao.UserDao
 import com.example.gweather.data.local.roomdb.GWeatherDatabase
+import com.example.gweather.utils.LocationUtils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,11 +23,29 @@ object DatabaseModule {
             context,
             GWeatherDatabase::class.java,
             "gweather_database"
-        ).fallbackToDestructiveMigration(true).build()
+        ).fallbackToDestructiveMigration(true)
+            .build()
     }
 
     @Provides
     fun provideUserDao(database: GWeatherDatabase): UserDao {
         return database.userDao()
+    }
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    object AppModule {
+        @Provides
+        @Singleton
+        fun provideSharedPreferences(@ApplicationContext context: Context): SecurePreference {
+            return SecurePreference(context)
+        }
+
+
+        @Provides
+        @Singleton
+        fun providesLocationUtils(): LocationUtils {
+            return LocationUtils()
+        }
     }
 }

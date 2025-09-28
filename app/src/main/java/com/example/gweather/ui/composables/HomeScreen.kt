@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,25 +30,35 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.gweather.R
 import com.example.gweather.models.BottomNavItem
+import com.example.gweather.models.UiState
+import com.example.gweather.utils.LocationUtils
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen(onLogout: () -> Unit = {}) {
+fun HomeScreen(
+    userName: String? = "",
+    weatherState: UiState = UiState.Initial,
+    weatherListState: UiState = UiState.Initial,
+    locationUtils: LocationUtils,
+    onLogout: () -> Unit = {}
+) {
 
     var tabIndex by rememberSaveable { mutableIntStateOf(0) }
     val scrollScope = rememberCoroutineScope()
     val bottomNavItems = listOf(
         BottomNavItem(
             title = "Current Weather",
-            iconRes = painterResource(R.drawable.app_logo),
+            selectedRes = painterResource(R.drawable.atmospheric_conditions_clr),
+            unselectedRes = painterResource(R.drawable.atmospheric_conditions_bnw)
         ), BottomNavItem(
-            title = "Past visits",
-            iconRes = painterResource(R.drawable.ic_password_eye_open)
+            title = "Weather history",
+            selectedRes = painterResource(R.drawable.img_selected_list),
+            unselectedRes = painterResource(R.drawable.img_unselected_list)
         )
     )
 
@@ -58,77 +68,101 @@ fun HomeScreen(onLogout: () -> Unit = {}) {
     )
 
     Scaffold(
-        topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .background(Color.Transparent)
-            ) {
-                Text("Hi, ")
-                Spacer(Modifier.weight(1f))
-                Row(modifier = Modifier.fillMaxHeight().padding(end = 12.dp)
-                    .clickable(onClick = onLogout),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End) {
-                    Text(
-                        fontSize = 16.sp,
-                        text = "Logout",
-                        color = Color.Black,
-                        fontFamily = FontFamily(Font(R.font.poppins_bold))
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        tint = Color.Black,
-                        painter = painterResource(R.drawable.logout),
-                        contentDescription = "Login"
-                    )
-                }
-
-            }
-        },
-        bottomBar = {
-            BottomNav(
-                currentIndex = tabIndex,
-                onSelectTab = { index ->
-                    tabIndex = pagerState.settledPage
-                    scrollScope.launch {
-                        pagerState.animateScrollToPage(index)
-                    }
-                },
-                navItems = bottomNavItems
-            )
-        },
         content = { padding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White)
-                    .padding(padding),
-                contentAlignment = Alignment.Center
+                    .background(Color.Transparent),
+                contentAlignment = Alignment.BottomCenter
             ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentAlignment = Alignment.Center
+                ) {
 
-                HorizontalPager(pagerState) {
-                    when (it) {
-                        0 -> {
-                            tabIndex = pagerState.currentPage
-                            CurrentWeatherScreen()
-                        }
+                    HorizontalPager(
+                        modifier = Modifier.fillMaxSize(),
+                        state = pagerState
+                    ) {
+                        when (it) {
+                            0 -> {
+                                tabIndex = pagerState.currentPage
+                                CurrentWeatherScreen(weatherState, locationUtils)
+                            }
 
-                        1 -> {
-                            tabIndex = pagerState.currentPage
-                            WeatherRecordsScreen()
+                            1 -> {
+                                tabIndex = pagerState.currentPage
+                                WeatherRecordsScreen(locationUtils = locationUtils, userWeatherListState = weatherListState)
+                            }
                         }
                     }
+                }
+                Box(modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.TopCenter) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(90.dp)
+                            .background(Color.Transparent),
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        Row(modifier = Modifier.padding(14.dp),
+                            verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Hi $userName,",
+                                textAlign = TextAlign.Center,
+                                fontSize = 16.sp,
+                                fontFamily = FontFamily(Font(R.font.poppins_bold)),
+                                color = Color.White.copy(.7f)
+                            )
+                            Spacer(Modifier.weight(1f))
+                            Row(
+                                modifier = Modifier
+                                    .clickable(onClick = onLogout)
+                                    .background(color = Color.White, shape = CircleShape)
+                                    .padding(vertical = 6.dp, horizontal = 14.dp),
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    fontSize = 14.sp,
+                                    text = "Logout",
+                                    color = Color.Black,
+                                    fontFamily = FontFamily(Font(R.font.poppins_bold))
+                                )
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Icon(
+                                    modifier = Modifier.size(24.dp),
+                                    tint = Color.Black,
+                                    painter = painterResource(R.drawable.logout),
+                                    contentDescription = "Login"
+                                )
+                            }
+                        }
+                    }
+                }
+                Box(contentAlignment = Alignment.BottomCenter) {
+                    BottomNav(
+                        currentIndex = tabIndex,
+                        onSelectTab = { index ->
+                            tabIndex = pagerState.settledPage
+                            scrollScope.launch {
+                                pagerState.scrollToPage(index)
+                            }
+                        },
+                        navItems = bottomNavItems
+                    )
                 }
             }
         }
     )
 }
 
+/*
 @Preview
 @Composable
 fun PreviewCurrentWeatherScreen() {
     HomeScreen()
-}
+}*/

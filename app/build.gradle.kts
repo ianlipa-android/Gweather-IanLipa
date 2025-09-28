@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -14,12 +15,20 @@ android {
     namespace = "com.example.gweather"
     compileSdk = 36
 
+    val appKey = Properties()
+    val secretsFile = File(rootDir, "local.properties")
+    if (secretsFile.exists()) {
+        secretsFile.inputStream().use { appKey.load(it) }
+    }
+
     defaultConfig {
         applicationId = "com.example.gweather"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        buildConfigField("String", "OPEN_WEATHER_API_KEY", "\"${appKey.getProperty("OPEN_WEATHER_API_KEY")}\"")
+        buildConfigField("String", "OPEN_WEATHER_API_KEY2", "\"${appKey.getProperty("OPEN_WEATHER_API_KEY2")}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -44,6 +53,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     kotlinOptions {
         freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
@@ -60,6 +70,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.protolite.well.known.types)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,4 +90,7 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.security.crypto)
     implementation(libs.jbcrypt)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
+    implementation(libs.constraintlayout.compose)
 }

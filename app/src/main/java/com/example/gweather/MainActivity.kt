@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -28,11 +27,13 @@ import com.example.gweather.ui.theme.GweatherTheme
 import com.example.gweather.utils.LocationUtils
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
+import jakarta.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val locationUtils = LocationUtils()
+    @Inject
+    lateinit var locationUtils: LocationUtils
 
     private val locationPermissionLauncher = this.registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -63,22 +64,18 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val isLocationEnabled = locationUtils.isLocationEnabled(this)
-
         initFusedLocationProviderClient()
+        val isLocationEnabled = locationUtils.isLocationEnabled(this)
         enableEdgeToEdge()
         setContent {
             GweatherTheme {
-                val context = LocalContext.current
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     innerPadding
                         ComposeNavigation(
+                            locationUtils = locationUtils,
                             isLocationEnabled = isLocationEnabled,
-                            onRequestPermission = {
+                            requestPermission = {
                                 requestLocationRationale()
-                            },
-                            onGetLocation = {
-                                locationUtils.getCurrentLocationCoordinate(context)
                             }
                         )
                     Log.d("asd", "isLocationEnabled $isLocationEnabled")
@@ -152,7 +149,7 @@ class MainActivity : ComponentActivity() {
 
         } else {
             Log.d("asd", "checkSelfPermission else")
-
+            //locationUtils.getCurrentLocationCoordinate(this)
             // Permission already granted, proceed with functionality.
 
 

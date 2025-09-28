@@ -10,6 +10,7 @@ import com.example.gweather.data.local.SecurePreference
 import com.example.gweather.data.restapi.LoginRepo
 import com.example.gweather.models.UiState
 import com.example.gweather.models.UserInfo
+import com.example.gweather.utils.LocationUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val loginRepo: LoginRepo
+    private val loginRepo: LoginRepo,
+    private val locationUtils: LocationUtils
 ) : ViewModel() {
 
     val securePref = SecurePreference(context)
@@ -54,16 +56,16 @@ class LoginViewModel @Inject constructor(
                 else "Invalid username or password"
             if (userName.isNotBlank() && password.isNotBlank()) {
                 val userHashedPassword = securePref.getUserPasswordHash(userName) ?: ""
-                val isValidPassword = userHashedPassword.let { PasswordUtils.verifyHash(password, it) }
-                loginRepo.login(userName, userHashedPassword).collect {
-                    if (it?.username != null) {
+                loginRepo.login(userName, userHashedPassword).collect { userData->
+                    if (userData?.username != null) {
+                        val isValidPassword = userHashedPassword.let { hashedPw-> PasswordUtils.verifyHash(password, hashedPw) }
                         if (isValidPassword) {
                             setSessionPreferences(userName)
-                            _loginState.value = UiState.Success(it)
+                            _loginState.value = UiState.Success(userData)
                         } else {
                             _loginState.value = UiState.Error("Invalid username or password")
                         }
-                        Log.d("iandebugasd", "success data: $it")
+                        Log.d("iandebugasd", "success data: $userData")
                     } else {
 
                         _loginState.value = UiState.Error(errMsg)

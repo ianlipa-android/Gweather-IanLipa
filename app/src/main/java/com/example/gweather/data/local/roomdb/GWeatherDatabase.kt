@@ -13,7 +13,7 @@ import com.example.gweather.data.local.entities.UserEntity
 @Database(
     entities = [
         UserEntity::class,
-    ], version = 4, exportSchema = false
+    ], version = 6, exportSchema = false
 )
 @TypeConverters(UserInfoConverter::class, OpenWeatherConverter::class)
 abstract class GWeatherDatabase : RoomDatabase() {
