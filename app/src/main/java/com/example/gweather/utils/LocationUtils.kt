@@ -9,10 +9,9 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.example.gweather.models.currentweather.Coordinates
+import com.example.gweather.models.Coordinates
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -70,13 +69,12 @@ class LocationUtils {
                     if (location != null) {
                         _coordinates.value = Coordinates(lat = location.latitude,
                         long = location.longitude)
-                        Log.d("iandebugasd", "lat ${coordinates.value.lat} long ${coordinates.value.long}")
                     } else {
                         val locationRequest = LocationRequest.Builder(
                             Priority.PRIORITY_HIGH_ACCURACY,
                             10000
-                        ) // Update interval in ms
-                            .setMinUpdateIntervalMillis(5000) // Smallest update interval
+                        )
+                            .setMinUpdateIntervalMillis(5000)
                             .build()
 
                         fusedLocationClient.requestLocationUpdates(
@@ -96,7 +94,6 @@ class LocationUtils {
 
             val city = addresses?.first()?.locality ?: ""
             val country = addresses?.first()?.countryCode ?: ""
-            Log.d("iandebugasd ", "Location = $country, $city")
             return if (!country.isEmpty() && !city.isEmpty()) {
                 "$country, $city"
             } else if (!city.isEmpty()) {
@@ -130,16 +127,22 @@ class LocationUtils {
         }
     }
 
+    fun getIsLocationPermissionGranted(context: Context) : Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
 
     companion object {
         const val LOCATION_PERMISSION_REQUEST_CODE = 1001
 
     }
-
-}
-
-interface ILocationCallbackContext {
-    fun getContext(context: Context): LocationCallback
 
 }
 

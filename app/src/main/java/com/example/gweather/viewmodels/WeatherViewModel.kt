@@ -1,7 +1,6 @@
 package com.example.gweather.viewmodels
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gweather.BuildConfig
@@ -43,15 +42,6 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             weatherRepo.getWeather(lat, long, apiKey).collect { response ->
                 if (response.isSuccessful) {
-                    //val responseWithUpdatedCoordinates = response.body()?.copy(coordinates = Coordinates(lat=lat, long=long))
-                    Log.d("iandebug", "weatherVm rawResponse ${response.body()}")
-                    //Log.d("iandebug", "weatherVm responseWithUpdatedCoordinates $responseWithUpdatedCoordinates")
-                    Log.d(
-                        "iandebugasdasd",
-                        "weatherVm userNamePref: ${securedPreference.getCurrentUserName()} weatherList: ${
-                            response.body()
-                        }"
-                    )
                     _weatherState.value = UiState.Success(data = response.body())
                     loginRepo.updateUserWeatherData(
                         userName = securedPreference.getCurrentUserName()!!,
@@ -73,7 +63,7 @@ class WeatherViewModel @Inject constructor(
                 if (!it?.weatherList.isNullOrEmpty()) {
                     _weatherListState.value = UiState.Success(it.weatherList)
                 } else {
-                    _weatherListState.value = UiState.Error("Is this your first visit? There are records found!")
+                    _weatherListState.value = UiState.Error("Is this your first visit? There are no records found!")
                 }
             }
 

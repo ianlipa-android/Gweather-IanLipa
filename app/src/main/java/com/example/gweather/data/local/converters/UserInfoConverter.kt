@@ -2,7 +2,7 @@ package com.example.gweather.data.local.converters
 
 import androidx.room.TypeConverter
 import com.example.gweather.models.UserInfo
-import com.example.gweather.models.currentweather.OpenWeatherCurrentResponse
+import com.example.gweather.models.OpenWeatherCurrentResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

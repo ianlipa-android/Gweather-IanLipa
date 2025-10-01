@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -38,29 +37,19 @@ class MainActivity : ComponentActivity() {
     private val locationPermissionLauncher = this.registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        // Handle the results of the permission request
         val fineLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
         val coarseLocationGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
 
         if (fineLocationGranted && coarseLocationGranted) {
             Toast.makeText(this, "Precise and Approximate Location Granted", Toast.LENGTH_SHORT)
                 .show()
-            // Proceed with location-dependent operations
         } else if (coarseLocationGranted) {
             Toast.makeText(this, "Approximate Location Granted", Toast.LENGTH_SHORT).show()
-            // Proceed with operations requiring approximate location
         } else {
             Toast.makeText(this, "Location Permissions Denied", Toast.LENGTH_SHORT).show()
-            // Handle permission denial, e.g., show a rationale or disable location features
         }
     }
 
-    /*private val locationRequest: LocationRequest = LocationRequest.create().apply {
-        interval = 30
-        fastestInterval = 10
-        priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-        maxWaitTime = 60
-    }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,14 +60,16 @@ class MainActivity : ComponentActivity() {
             GweatherTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     innerPadding
-                        ComposeNavigation(
-                            locationUtils = locationUtils,
-                            isLocationEnabled = isLocationEnabled,
-                            requestPermission = {
-                                requestLocationRationale()
-                            }
-                        )
-                    Log.d("asd", "isLocationEnabled $isLocationEnabled")
+                    ComposeNavigation(
+                        locationUtils = locationUtils,
+                        isLocationServiceEnabled = isLocationEnabled,
+                        requestPermission = {
+                            initRequestLocationRationale()
+                        },
+                        showPermissionRequiredDialog = {
+                            showAlertDialog(true)
+                        }
+                    )
                 }
             }
         }
@@ -86,10 +77,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        checkPermissionOnResume()
+        initRequestLocationRationale()
     }
 
-    private fun requestLocationRationale() {
+    private fun initRequestLocationRationale() {
 
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_COARSE_LOCATION
@@ -98,15 +89,6 @@ class MainActivity : ComponentActivity() {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            Log.d("asd", "checkSelfPermission" +
-                    "coarse ${ActivityCompat.shouldShowRequestPermissionRationale(
-                        this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    )}" +
-                    "fine ${ActivityCompat.shouldShowRequestPermissionRationale(
-                        this,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    )}")
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this,
                     Manifest.permission.ACCESS_COARSE_LOCATION
@@ -115,29 +97,14 @@ class MainActivity : ComponentActivity() {
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             ) {
-                // Show an educational UI (e.g., a dialog) explaining why the camera permission is needed.
+                // Show an educational UI (e.g., a dialog) explaining why the permission is needed.
                 // Then, request the permission.
-                Log.d("asd", "shouldShowRequestPermissionRationale" +
-                        "coarse ${ActivityCompat.shouldShowRequestPermissionRationale(
-                            this,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                        )}" +
-                        " fine ${ActivityCompat.shouldShowRequestPermissionRationale(
-                            this,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        )}")
-
-                locationPermissionLauncher.launch(
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    )
-                )
+                showAlertDialog(true)
 
             } else {
-                Log.d("asd", "shouldShowRequestPermissionRationale else")
 
                 // Request the permission directly (either first time or "never ask again" was selected).
+
                 locationPermissionLauncher.launch(
                     arrayOf(
                         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -148,8 +115,6 @@ class MainActivity : ComponentActivity() {
             }
 
         } else {
-            Log.d("asd", "checkSelfPermission else")
-            //locationUtils.getCurrentLocationCoordinate(this)
             // Permission already granted, proceed with functionality.
 
 
@@ -160,46 +125,33 @@ class MainActivity : ComponentActivity() {
         locationUtils.fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
-    private fun showAlertDialog() {
+    private fun showAlertDialog(show: Boolean) {
         val builder = AlertDialog.Builder(this)
 
         with(builder) {
             setTitle("Important Alert")
-            setMessage("Location permission is required to access the app.")
+            setMessage("Location permission is required to access all the features of the app.")
             setPositiveButton("Goto settings") { dialog, which ->
                 // Action to perform when the positive button is clicked
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    val uri = Uri.fromParts("package", packageName, null)
-                    intent.data = uri
-                    startActivity(intent)
-                dialog.dismiss() // Dismiss the dialog
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val uri = Uri.fromParts("package", packageName, null)
+                intent.data = uri
+                startActivity(intent)
+                dialog.dismiss()
             }
-            // Optional: Add a negative button
             setNegativeButton("Cancel") { dialog, which ->
                 Toast.makeText(applicationContext, "Cancel clicked", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }
-            // Optional: Add a neutral button
             setNeutralButton("Later") { dialog, which ->
                 Toast.makeText(applicationContext, "Later clicked", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }
-            // Create and show the AlertDialog
-            show()
-        }
-    }
-
-    private fun checkPermissionOnResume() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-            || ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED) {
-            // Permission is granted, proceed with the action that requires this permission
-            // For example, if it's camera permission, you can now open the camera
-        } else {
-            showAlertDialog()
+            if (show) {
+                show()
+            } else {
+                show().dismiss()
+            }
         }
     }
 }

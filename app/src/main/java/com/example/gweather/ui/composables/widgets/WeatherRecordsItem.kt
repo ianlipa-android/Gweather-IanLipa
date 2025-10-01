@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import com.example.gweather.R
-import com.example.gweather.models.currentweather.OpenWeatherCurrentResponse
+import com.example.gweather.models.OpenWeatherCurrentResponse
 import com.example.gweather.utils.DateTimeConverterUtils
 import com.example.gweather.utils.LocationUtils
 
@@ -45,7 +45,7 @@ fun WeatherRecordsItem(
             weatherData?.coordinates?.long ?: 0.0, context = context
         )
     } catch (e: Exception) {
-        "Unnamed location"
+        "Can't fetch location data"
     }
     val degreesCelsius =
         (weatherData?.main?.temp?.minus(273.15)).toString().substring(0, 4).plus("°C")
@@ -58,15 +58,15 @@ fun WeatherRecordsItem(
             Color.Yellow
         } else Color.White
     val timeOfSunrise =
-        dateTimeUtils.convertEpochToDateTimeModern(weatherData?.sys?.sunrise?.toLong() ?: 0)
+        dateTimeUtils.convertEpochToDateTimeModern(weatherData.sys?.sunrise?.toLong() ?: 0)
     val timeOfSunset =
-        dateTimeUtils.convertEpochToDateTimeModern(weatherData?.sys?.sunset?.toLong() ?: 0)
+        dateTimeUtils.convertEpochToDateTimeModern(weatherData.sys?.sunset?.toLong() ?: 0)
     val imageUrl =
         "${baseWeatherImageUrl}${weatherData?.weather?.first()?.icon}@4x.png"
     val weatherDescription = weatherData?.weather?.first()?.description
     val timeOfCollection =
         dateTimeUtils.convertEpochToDateTimeModern(
-            weatherData?.timeOfCollection?.toLong() ?: 0
+            epochMillis = weatherData.timeOfCollection.toLong() ?: 0
         )
     val minTemp =
         (weatherData?.main?.tempMin?.minus(273.15)).toString().substring(0, 4).plus("°C")
@@ -82,7 +82,7 @@ fun WeatherRecordsItem(
     ) {
 
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (avgTemp, highTemp, lowTemp, location, weather, icon, bg, boxDets) = createRefs()
+            val (avgTemp, highTemp, lowTemp, location, date, icon, bg, boxDets) = createRefs()
 
             Image(
                 contentScale = ContentScale.FillBounds,
@@ -127,6 +127,16 @@ fun WeatherRecordsItem(
                             start.linkTo(parent.start)
                         })
                     Text(
+                        text = timeOfCollection,
+                        color = tempColor,
+                        fontSize = 12.sp,
+                        lineHeight = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.poppins_bold)),
+                        modifier = Modifier.constrainAs(date) {
+                            start.linkTo(parent.start)
+                            bottom.linkTo(highTemp.top, margin = 4.dp)
+                        })
+                    Text(
                         text = "H: $maxTemp",
                         color = tempColor,
                         fontSize = 12.sp,
@@ -160,8 +170,7 @@ fun WeatherRecordsItem(
             }
             Box(
                 modifier = Modifier
-                    .size(180.dp)
-                    .offset(x = (25).dp, y = 10.dp)
+                    .size(150.dp)
                     .background(tempColor.copy(.15f), CircleShape)
                     .constrainAs(icon) {
                         end.linkTo(parent.end)
