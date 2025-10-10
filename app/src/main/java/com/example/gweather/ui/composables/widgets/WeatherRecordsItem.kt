@@ -62,11 +62,11 @@ fun WeatherRecordsItem(
     val timeOfSunset =
         dateTimeUtils.convertEpochToDateTimeModern(weatherData.sys?.sunset?.toLong() ?: 0)
     val imageUrl =
-        "${baseWeatherImageUrl}${weatherData?.weather?.first()?.icon}@4x.png"
-    val weatherDescription = weatherData?.weather?.first()?.description
+        "${baseWeatherImageUrl}${weatherData.weather?.first()?.icon}@4x.png"
+    val weatherDescription = weatherData.weather?.first()?.description
     val timeOfCollection =
         dateTimeUtils.convertEpochToDateTimeModern(
-            epochMillis = weatherData.timeOfCollection.toLong() ?: 0
+            epochMillis = weatherData.timeOfCollection.toLong(), pattern = "MMM dd, yyyy,  hh:mm a"
         )
     val minTemp =
         (weatherData?.main?.tempMin?.minus(273.15)).toString().substring(0, 4).plus("°C")
