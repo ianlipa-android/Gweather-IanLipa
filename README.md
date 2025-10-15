@@ -23,20 +23,21 @@ user’s current location.
 
 It includes:
 
-**City and Country**: Automatically detected via the user’s geolocation.
-**Current Temperature**: Displayed in Celsius, fetched directly from the OpenWeather API.
-**Sunrise and Sunset Time**: Clearly shown in the user’s local time zone.
+**City and Country**: Automatically detected via the user’s geolocation.<br>
+**Current Temperature**: Displayed in Celsius, fetched directly from the OpenWeather API.<br>
+**Sunrise and Sunset Time**: Clearly shown in the user’s local time zone.<br>
 **Dynamic Weather Icon**: Displays a dynamic Icon depending on the Icon provided by the OpenWeather
-Api. -- no day or night icon indicator for cloudy weather
+Api. -- no day or night icon indicator for cloudy weather<br>
 **Dynamic Weather Background**: Displays a dynamic background on the first tab(Current weather)
-depending on the
-weather detected. -- all weather data is refreshed in real time whenever the user opens the app.
-**Time of data collection**: Displays the exact time when the weather data is collected
+depending on the weather detected. -- all weather data is refreshed in real time whenever the user
+opens the app.<br>
+**Time of data collection**: Displays the exact time when the weather data is collected<br>
 
 📜 Weather History Tab
 The second tab shows a list of all previously fetched weather data each time the app was opened.
 
 This includes:
+
 - Date and Time of Fetch
 - City and Country
 - Temperature (°C)
@@ -45,8 +46,8 @@ This includes:
 - Time of data collection
 
 This provides a convenient way for users to track weather changes over time.
--- Weather data collected on the fist tab is only displayed on this tab after fetching new weather data
-
+-- Weather data collected on the fist tab is only displayed on this tab after fetching new weather
+data
 
 ⚙️ Technical Details<br><br>
 API Used: OpenWeather API
