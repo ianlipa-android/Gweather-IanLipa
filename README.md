@@ -48,7 +48,7 @@ This provides a convenient way for users to track weather changes over time.
 -- Weather data collected on the fist tab is only displayed on this tab after fetching new weather data
 
 
-⚙️ Technical Details
+⚙️ Technical Details<br><br>
 API Used: OpenWeather API
 ===============================================================================================
 Note: Before running the app, you need to create/add a field in local.properties named
@@ -67,10 +67,11 @@ Libraries/Technologies/Concept used:
 - Coroutines
 - RoomDB
 - Jetpack Compose
+- Flow
 
 All resources used come from the general internet and some AI generated(GWeather logo)💡
 
-Here are preview of the pages
+Here are preview of the screens
 ![_12.jpg](app/src/main/res/drawable/_12.jpg)
 ![_23.jpg](app/src/main/res/drawable/_23.jpg)
 ![log.jpg](app/src/main/res/drawable/log.jpg)
