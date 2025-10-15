@@ -31,11 +31,12 @@ android {
         buildConfigField("String", "OPEN_WEATHER_API_KEY2", "\"${appKey.getProperty("OPEN_WEATHER_API_KEY2")}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig = signingConfigs.getByName("debug")
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
