@@ -15,14 +15,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    //@Singleton
     @Provides
     fun provideOkHttp() : OkHttpClient {
         return OkHttpClient.Builder()
             .build()
     }
 
-    //@Singleton
     @Provides
     @Named("loggingInterceptor")
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {

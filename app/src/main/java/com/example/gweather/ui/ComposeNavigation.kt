@@ -4,7 +4,6 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -24,10 +23,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun ComposeNavigation(
     locationUtils: LocationUtils,
-    isLocationEnabled: Boolean = false,
-    requestPermission: () -> Unit = {}
-
+    requestPermission: () -> Unit,
+    showPermissionRequiredDialog: () -> Unit = {},
+    isLocationServiceEnabled: Boolean = false
     ) {
+
     var backClicks = 0
     val context = LocalContext.current
     val coroutine = rememberCoroutineScope()
@@ -51,7 +51,7 @@ fun ComposeNavigation(
         composable<AppRoute.Login> {
             LoginRoute(
                 navController = mNavController,
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
             )
         }
 
@@ -67,15 +67,15 @@ fun ComposeNavigation(
                 navController = mNavController,
                 loginViewModel = loginViewModel,
                 weatherViewModel = weatherViewModel,
-                locationUtils = locationUtils
+                locationUtils = locationUtils,
+                requestPermission = requestPermission,
+                showPermissionRequiredDialog = showPermissionRequiredDialog,
+                isLocationServiceEnabled = isLocationServiceEnabled
             )
         }
 
     }
 
-    LaunchedEffect(Unit) {
-        requestPermission()
-    }
 
     BackHandler {
         if (!mNavController.popBackStack()) {

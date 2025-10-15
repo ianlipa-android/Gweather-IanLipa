@@ -1,10 +1,9 @@
 package com.example.gweather.data.restapi
 
-import android.util.Log
 import com.example.gweather.data.local.dao.UserDao
 import com.example.gweather.data.local.entities.UserEntity
 import com.example.gweather.models.UserInfo
-import com.example.gweather.models.currentweather.OpenWeatherCurrentResponse
+import com.example.gweather.models.OpenWeatherCurrentResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -32,7 +31,6 @@ class LoginRepo @Inject constructor(
     override suspend fun register(userInfo: UserInfo) = flow<Boolean> {
         val user = userDao.getUserByUsername(userInfo.username)
         val isExisting = userDao.getUserByUsername(userInfo.username) != null
-        Log.d("iandebugasd", "registering: user: $user isExisting: $isExisting")
 
         if (isExisting) {
             emit(false)
@@ -80,7 +78,6 @@ class LoginRepo @Inject constructor(
         lat: Double,
         userWeatherInfo: List<OpenWeatherCurrentResponse>
     ) {
-        Log.d("iandebugasd", "updateUserWeatherData: $userName long: $long lat: $lat $userWeatherInfo ")
         val userDataA = userDao.getUserByUsername(userName)
         val existingListA =
             userDataA?.weatherList                             // existing weather list data
@@ -95,10 +92,6 @@ class LoginRepo @Inject constructor(
             }
         }
         userDataA.let {
-            Log.d("iandebugasd", "updateUserWeatherData.let userData $userDataA")
-            Log.d("iandebugasd", "updateUserWeatherData.let existing list $existingListA")
-            Log.d("iandebugasd", "updateUserWeatherData.let newUserData $newUserData")
-            Log.d("iandebugasd", "updateUserWeatherData.let updatedUserData $newListOfUpdatedWeatherInfo")
             it?.weatherList = combinedListA ?: emptyList()
             userDao.updateUserWeatherData(it!!)
         }

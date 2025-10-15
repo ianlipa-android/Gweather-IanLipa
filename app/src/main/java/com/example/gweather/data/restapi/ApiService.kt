@@ -1,6 +1,6 @@
 package com.example.gweather.data.restapi
 
-import com.example.gweather.models.currentweather.OpenWeatherCurrentResponse
+import com.example.gweather.models.OpenWeatherCurrentResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

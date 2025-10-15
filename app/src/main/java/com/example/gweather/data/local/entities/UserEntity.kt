@@ -2,7 +2,7 @@ package com.example.gweather.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.gweather.models.currentweather.OpenWeatherCurrentResponse
+import com.example.gweather.models.OpenWeatherCurrentResponse
 import kotlinx.serialization.Serializable
 
 @Serializable

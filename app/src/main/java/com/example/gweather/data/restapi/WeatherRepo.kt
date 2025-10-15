@@ -1,6 +1,6 @@
 package com.example.gweather.data.restapi
 
-import com.example.gweather.models.currentweather.OpenWeatherCurrentResponse
+import com.example.gweather.models.OpenWeatherCurrentResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import retrofit2.Response

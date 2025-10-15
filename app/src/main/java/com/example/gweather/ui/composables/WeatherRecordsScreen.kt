@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.gweather.R
 import com.example.gweather.models.UiState
-import com.example.gweather.models.currentweather.OpenWeatherCurrentResponse
+import com.example.gweather.models.OpenWeatherCurrentResponse
 import com.example.gweather.ui.composables.widgets.WeatherRecordsItem
 import com.example.gweather.utils.LocationUtils
 
@@ -33,12 +33,12 @@ fun WeatherRecordsScreen(locationUtils: LocationUtils, userWeatherListState: UiS
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Blue.copy(0.2f)),
+            .background(Color.Blue.copy(.3F)),
         contentAlignment = Alignment.Center
     ) {
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(start = 12.dp, end = 12.dp, top = 24.dp)) {
+            .padding(start = 12.dp, end = 12.dp, top = 32.dp)) {
 
             when (userWeatherListState) {
                 is UiState.Success -> {
@@ -49,7 +49,7 @@ fun WeatherRecordsScreen(locationUtils: LocationUtils, userWeatherListState: UiS
                             userWeatherListState.data as List<OpenWeatherCurrentResponse>
                         Text(
                             modifier = Modifier.fillMaxWidth(),
-                            text = "This are your past weather records: ",
+                            text = "These are your past weather records: ",
                             color = Color.White,
                             textAlign = TextAlign.Center,
                             fontSize = 32.sp,
@@ -77,7 +77,6 @@ fun WeatherRecordsScreen(locationUtils: LocationUtils, userWeatherListState: UiS
                         }
                     }
 
-//
                 }
 
                 is UiState.Error -> {

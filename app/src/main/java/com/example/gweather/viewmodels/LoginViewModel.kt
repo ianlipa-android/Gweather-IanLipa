@@ -1,7 +1,6 @@
 package com.example.gweather.viewmodels
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gweather.data.local.PasswordUtils
@@ -10,7 +9,6 @@ import com.example.gweather.data.local.SecurePreference
 import com.example.gweather.data.restapi.LoginRepo
 import com.example.gweather.models.UiState
 import com.example.gweather.models.UserInfo
-import com.example.gweather.utils.LocationUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -25,12 +23,11 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val loginRepo: LoginRepo,
-    private val locationUtils: LocationUtils
 ) : ViewModel() {
 
     val securePref = SecurePreference(context)
-    val userName = securePref.getCurrentUserName()
-    val isLoggedIn = securePref.isLoggedIn(userName!!)
+    var mUserName = securePref.getCurrentUserName()
+    val isLoggedIn = securePref.isLoggedIn(mUserName!!)
 
 
     private var _loginState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Initial)
@@ -61,11 +58,11 @@ class LoginViewModel @Inject constructor(
                         val isValidPassword = userHashedPassword.let { hashedPw-> PasswordUtils.verifyHash(password, hashedPw) }
                         if (isValidPassword) {
                             setSessionPreferences(userName)
+                            mUserName = userName
                             _loginState.value = UiState.Success(userData)
                         } else {
                             _loginState.value = UiState.Error("Invalid username or password")
                         }
-                        Log.d("iandebugasd", "success data: $userData")
                     } else {
 
                         _loginState.value = UiState.Error(errMsg)
@@ -86,7 +83,6 @@ class LoginViewModel @Inject constructor(
                 _registerState.value = UiState.Error("Passwords do not match")
             } else {
                 val hashedPassword = encrypt(password)
-                Log.d("iandebugasd", "Hashed Password: $hashedPassword")
 
                 loginRepo.register(UserInfo(userName, hashedPassword, emptyList())).collect {
                     if (it) {
@@ -97,7 +93,7 @@ class LoginViewModel @Inject constructor(
                     }
                 }
             }
-            delay(1000)
+            delay(600)
             _registerState.value = UiState.Initial
         }
     }
@@ -108,7 +104,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun clearSessionPrefs() {
-        securePref.clearSessionPrefs(userName!!)
+        securePref.clearSessionPrefs(mUserName!!)
     }
 
 

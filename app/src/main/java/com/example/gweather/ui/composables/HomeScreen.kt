@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.example.gweather.R
 import com.example.gweather.models.BottomNavItem
 import com.example.gweather.models.UiState
+import com.example.gweather.ui.composables.widgets.BottomNav
 import com.example.gweather.utils.LocationUtils
 import kotlinx.coroutines.launch
 
@@ -105,7 +106,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(90.dp)
-                            .background(Color.Transparent),
+                            .background(Color.Black.copy(0.5f)),
                         verticalAlignment = Alignment.Bottom
                     ) {
                         Row(modifier = Modifier.padding(14.dp),
@@ -113,9 +114,9 @@ fun HomeScreen(
                             Text(
                                 text = "Hi $userName,",
                                 textAlign = TextAlign.Center,
-                                fontSize = 16.sp,
+                                fontSize = 20.sp,
                                 fontFamily = FontFamily(Font(R.font.poppins_bold)),
-                                color = Color.White.copy(.7f)
+                                color = Color.White
                             )
                             Spacer(Modifier.weight(1f))
                             Row(

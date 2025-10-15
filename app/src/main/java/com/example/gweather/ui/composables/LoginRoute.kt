@@ -14,7 +14,7 @@ import com.example.gweather.viewmodels.LoginViewModel
 @Composable
 fun LoginRoute(
     navController: NavController,
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
 ) {
     val context = LocalContext.current
     val loginState by loginViewModel.loginState.collectAsState()
