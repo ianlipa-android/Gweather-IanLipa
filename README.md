@@ -37,12 +37,12 @@ weather detected. -- all weather data is refreshed in real time whenever the use
 The second tab shows a list of all previously fetched weather data each time the app was opened.
 
 This includes:
-Date and Time of Fetch
-City and Country
-Temperature (°C)
-Weather Description (e.g., Clear, Rainy, Cloudy)
-Corresponding Weather Icon
-Time of data collection
+- Date and Time of Fetch
+- City and Country
+- Temperature (°C)
+- Weather Description (e.g., Clear, Rainy, Cloudy)
+- Corresponding Weather Icon
+- Time of data collection
 
 This provides a convenient way for users to track weather changes over time.
 -- Weather data collected on the fist tab is only displayed on this tab after fetching new weather data
